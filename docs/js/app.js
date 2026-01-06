@@ -96,7 +96,10 @@ const App = {
       const cborData = await this.serial.sendGetRequest();
 
       // Decode CBOR (cbor-js expects ArrayBuffer)
-      const config = CBOR.decode(cborData.buffer.slice(cborData.byteOffset, cborData.byteOffset + cborData.byteLength));
+      const rawConfig = CBOR.decode(cborData.buffer.slice(cborData.byteOffset, cborData.byteOffset + cborData.byteLength));
+
+      // Transform delta-SID encoded data to YANG names
+      const config = this.detransform(rawConfig);
       this.currentConfig = config;
 
       this.displayConfig(config);
@@ -108,14 +111,78 @@ const App = {
     }
   },
 
-  displayConfig(config) {
-    // Convert CBOR Map to object for easier access
-    const data = this.mapToObject(config);
+  /**
+   * Transform delta-SID encoded CBOR to YANG structure
+   */
+  detransform(data, parentSid = 0) {
+    if (data === null || data === undefined) return data;
 
-    // System info
-    const hardware = data['ietf-hardware:hardware'];
+    if (Array.isArray(data)) {
+      return data.map(item => this.detransform(item, parentSid));
+    }
+
+    if (typeof data === 'object') {
+      const result = {};
+
+      for (const [key, value] of Object.entries(data)) {
+        const deltaSid = parseInt(key, 10);
+
+        if (!isNaN(deltaSid)) {
+          // This is a delta-SID key
+          const absoluteSid = parentSid + deltaSid;
+          const sidInfo = SID_MAP.map[absoluteSid];
+
+          if (sidInfo) {
+            // Extract the leaf name from the full path
+            const yangName = this.extractLeafName(sidInfo.path);
+            result[yangName] = this.detransform(value, absoluteSid);
+          } else {
+            // Unknown SID, keep the number
+            result[key] = this.detransform(value, absoluteSid);
+          }
+        } else {
+          // Regular string key
+          result[key] = this.detransform(value, parentSid);
+        }
+      }
+
+      return result;
+    }
+
+    return data;
+  },
+
+  /**
+   * Extract leaf name from YANG path
+   * e.g., "/ietf-interfaces:interfaces/interface/name" -> "name"
+   */
+  extractLeafName(path) {
+    if (!path) return path;
+
+    // Remove leading slash
+    const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+
+    // Split by / and get last part
+    const parts = cleanPath.split('/');
+    let lastPart = parts[parts.length - 1];
+
+    // Handle module prefix (e.g., "ietf-interfaces:interfaces" -> "ietf-interfaces:interfaces")
+    // For root elements, keep the full name with module prefix
+    if (parts.length === 1) {
+      return lastPart;
+    }
+
+    // For nested elements, just use the leaf name
+    return lastPart;
+  },
+
+  displayConfig(config) {
+    // System info (look for ietf-hardware:hardware)
+    const hardware = config['ietf-hardware:hardware'] || config['hardware'];
     if (hardware && hardware.component) {
-      const chassis = hardware.component.find(c => c.class === 'chassis' || c.class === 'iana-hardware:chassis');
+      const chassis = hardware.component.find(c =>
+        c.class === 'iana-hardware:chassis' || c.class === 'chassis'
+      );
       if (chassis) {
         this.setText('sys-model', chassis['model-name'] || '--');
         this.setText('sys-firmware', chassis['firmware-rev'] || '--');
@@ -130,13 +197,13 @@ const App = {
     }
 
     // Interfaces
-    const interfaces = data['ietf-interfaces:interfaces'];
+    const interfaces = config['ietf-interfaces:interfaces'] || config['interfaces'];
     if (interfaces && interfaces.interface) {
       this.updatePorts(interfaces.interface);
     }
 
     // Show raw config in config tab
-    this.displayRawConfig(data);
+    this.displayRawConfig(config);
   },
 
   updatePorts(interfaces) {
@@ -194,7 +261,7 @@ const App = {
     interfaces.forEach((iface, index) => {
       const portNum = index + 1;
       const isUp = iface['oper-status'] === 'up';
-      const ethernet = iface['ieee802-ethernet-interface:ethernet'] || {};
+      const ethernet = iface.ethernet || {};
       const speed = ethernet.speed || 1;
 
       const tr = document.createElement('tr');
@@ -297,25 +364,6 @@ const App = {
 
   showError(message) {
     alert(message);
-  },
-
-  mapToObject(map) {
-    if (map instanceof Map) {
-      const obj = {};
-      for (const [key, value] of map) {
-        obj[key] = this.mapToObject(value);
-      }
-      return obj;
-    } else if (Array.isArray(map)) {
-      return map.map(item => this.mapToObject(item));
-    } else if (map && typeof map === 'object') {
-      const obj = {};
-      for (const key of Object.keys(map)) {
-        obj[key] = this.mapToObject(map[key]);
-      }
-      return obj;
-    }
-    return map;
   }
 };
 
