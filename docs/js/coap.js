@@ -188,18 +188,16 @@ const CoAP = {
 
   /**
    * Build iPATCH request
+   * Uses Content-Format 142 (YANG_INSTANCES_CBOR) per VelocityDrive SP spec
    */
   buildIPatchRequest(payload, options = {}) {
     const messageId = options.messageId || Math.floor(Math.random() * 65536);
-    const token = options.token || new Uint8Array([
-      Math.floor(Math.random() * 256),
-      Math.floor(Math.random() * 256)
-    ]);
+    const token = options.token || new Uint8Array([]);  // Empty token
 
     const coapOptions = [
       { number: this.OptionNumber.URI_PATH, value: 'c' },
-      { number: this.OptionNumber.CONTENT_FORMAT, value: this.ContentFormat.YANG_DATA_CBOR_SID },
-      { number: this.OptionNumber.ACCEPT, value: this.ContentFormat.YANG_DATA_CBOR_SID }
+      { number: this.OptionNumber.CONTENT_FORMAT, value: this.ContentFormat.YANG_INSTANCES_CBOR },  // 142
+      { number: this.OptionNumber.ACCEPT, value: this.ContentFormat.YANG_DATA_CBOR_SID }  // 140
     ];
 
     return {
