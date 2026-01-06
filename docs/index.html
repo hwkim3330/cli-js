@@ -28,6 +28,10 @@
             </svg>
             Dashboard
           </a>
+        </div>
+
+        <div class="nav-section">
+          <span class="nav-section-title">Interface</span>
           <a class="nav-item" data-page="ports">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <rect x="2" y="6" width="20" height="12" rx="2"></rect>
@@ -36,12 +40,33 @@
             </svg>
             Ports
           </a>
+          <a class="nav-item" data-page="qos">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+              <path d="M2 17l10 5 10-5"></path>
+              <path d="M2 12l10 5 10-5"></path>
+            </svg>
+            QoS
+          </a>
+          <a class="nav-item" data-page="scheduler">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+              <line x1="16" y1="2" x2="16" y2="6"></line>
+              <line x1="8" y1="2" x2="8" y2="6"></line>
+              <line x1="3" y1="10" x2="21" y2="10"></line>
+            </svg>
+            TAS Scheduler
+          </a>
+        </div>
+
+        <div class="nav-section">
+          <span class="nav-section-title">System</span>
           <a class="nav-item" data-page="config">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="12" cy="12" r="3"></circle>
               <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
             </svg>
-            Configuration
+            Raw Config
           </a>
         </div>
       </nav>
@@ -69,7 +94,6 @@
 
       <!-- Dashboard Page -->
       <div class="page active" id="dashboard-page">
-        <!-- Switch Diagram -->
         <div class="card switch-diagram">
           <div class="switch-body">
             <div class="switch-label">LAN9662 TSN Switch</div>
@@ -94,13 +118,9 @@
           </div>
         </div>
 
-        <!-- System Info & Port Stats -->
         <div class="grid grid-2">
-          <!-- System Info -->
           <div class="card">
-            <div class="card-header">
-              <h3>System Information</h3>
-            </div>
+            <div class="card-header"><h3>System Information</h3></div>
             <div class="card-body">
               <table class="info-table">
                 <tr><td>Model</td><td id="sys-model">--</td></tr>
@@ -112,7 +132,6 @@
             </div>
           </div>
 
-          <!-- Port 1 Stats -->
           <div class="card">
             <div class="card-header">
               <h3>Port 1</h3>
@@ -120,36 +139,17 @@
             </div>
             <div class="card-body">
               <div class="stats-grid">
-                <div class="stat">
-                  <span class="stat-label">RX Packets</span>
-                  <span class="stat-value" id="port1-rx">0</span>
-                </div>
-                <div class="stat">
-                  <span class="stat-label">TX Packets</span>
-                  <span class="stat-value" id="port1-tx">0</span>
-                </div>
-                <div class="stat">
-                  <span class="stat-label">RX Bytes</span>
-                  <span class="stat-value" id="port1-rx-bytes">0 B</span>
-                </div>
-                <div class="stat">
-                  <span class="stat-label">TX Bytes</span>
-                  <span class="stat-value" id="port1-tx-bytes">0 B</span>
-                </div>
-                <div class="stat">
-                  <span class="stat-label">Errors</span>
-                  <span class="stat-value" id="port1-errors">0</span>
-                </div>
-                <div class="stat">
-                  <span class="stat-label">Discards</span>
-                  <span class="stat-value" id="port1-discards">0</span>
-                </div>
+                <div class="stat"><span class="stat-label">RX Packets</span><span class="stat-value" id="port1-rx">0</span></div>
+                <div class="stat"><span class="stat-label">TX Packets</span><span class="stat-value" id="port1-tx">0</span></div>
+                <div class="stat"><span class="stat-label">RX Bytes</span><span class="stat-value" id="port1-rx-bytes">0 B</span></div>
+                <div class="stat"><span class="stat-label">TX Bytes</span><span class="stat-value" id="port1-tx-bytes">0 B</span></div>
+                <div class="stat"><span class="stat-label">Errors</span><span class="stat-value" id="port1-errors">0</span></div>
+                <div class="stat"><span class="stat-label">Discards</span><span class="stat-value" id="port1-discards">0</span></div>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Port 2 Stats -->
         <div class="card">
           <div class="card-header">
             <h3>Port 2</h3>
@@ -157,30 +157,12 @@
           </div>
           <div class="card-body">
             <div class="stats-grid">
-              <div class="stat">
-                <span class="stat-label">RX Packets</span>
-                <span class="stat-value" id="port2-rx">0</span>
-              </div>
-              <div class="stat">
-                <span class="stat-label">TX Packets</span>
-                <span class="stat-value" id="port2-tx">0</span>
-              </div>
-              <div class="stat">
-                <span class="stat-label">RX Bytes</span>
-                <span class="stat-value" id="port2-rx-bytes">0 B</span>
-              </div>
-              <div class="stat">
-                <span class="stat-label">TX Bytes</span>
-                <span class="stat-value" id="port2-tx-bytes">0 B</span>
-              </div>
-              <div class="stat">
-                <span class="stat-label">Errors</span>
-                <span class="stat-value" id="port2-errors">0</span>
-              </div>
-              <div class="stat">
-                <span class="stat-label">Discards</span>
-                <span class="stat-value" id="port2-discards">0</span>
-              </div>
+              <div class="stat"><span class="stat-label">RX Packets</span><span class="stat-value" id="port2-rx">0</span></div>
+              <div class="stat"><span class="stat-label">TX Packets</span><span class="stat-value" id="port2-tx">0</span></div>
+              <div class="stat"><span class="stat-label">RX Bytes</span><span class="stat-value" id="port2-rx-bytes">0 B</span></div>
+              <div class="stat"><span class="stat-label">TX Bytes</span><span class="stat-value" id="port2-tx-bytes">0 B</span></div>
+              <div class="stat"><span class="stat-label">Errors</span><span class="stat-value" id="port2-errors">0</span></div>
+              <div class="stat"><span class="stat-label">Discards</span><span class="stat-value" id="port2-discards">0</span></div>
             </div>
           </div>
         </div>
@@ -189,24 +171,263 @@
       <!-- Ports Page -->
       <div class="page" id="ports-page">
         <div class="card">
-          <div class="card-header">
-            <h3>Port Status</h3>
-          </div>
+          <div class="card-header"><h3>Port Configuration</h3></div>
           <div class="card-body">
             <table class="data-table">
               <thead>
                 <tr>
                   <th>Port</th>
                   <th>Status</th>
+                  <th>Admin</th>
                   <th>Speed</th>
+                  <th>Duplex</th>
                   <th>MAC Address</th>
-                  <th>VLAN</th>
-                  <th>Type</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
-              <tbody id="ports-table-body">
+              <tbody id="ports-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Port Detail Config -->
+        <div class="card" id="port-detail-card" style="display:none;">
+          <div class="card-header">
+            <h3>Port <span id="port-detail-num">1</span> Settings</h3>
+          </div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Admin Status</label>
+                <select id="port-admin-status">
+                  <option value="up">Enabled</option>
+                  <option value="down">Disabled</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Speed</label>
+                <select id="port-speed">
+                  <option value="auto">Auto</option>
+                  <option value="10">10 Mbps</option>
+                  <option value="100">100 Mbps</option>
+                  <option value="1000">1 Gbps</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Duplex</label>
+                <select id="port-duplex">
+                  <option value="auto">Auto</option>
+                  <option value="full">Full</option>
+                  <option value="half">Half</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Default VLAN</label>
+                <input type="number" id="port-vlan" value="1" min="1" max="4094">
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" id="port-apply-btn">Apply</button>
+              <button class="btn btn-secondary" id="port-cancel-btn">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- QoS Page -->
+      <div class="page" id="qos-page">
+        <div class="tabs">
+          <button class="tab active" data-tab="qos-pcp">PCP Mapping</button>
+          <button class="tab" data-tab="qos-queues">Queue Config</button>
+          <button class="tab" data-tab="qos-shaper">Traffic Shaper</button>
+        </div>
+
+        <div class="tab-content active" id="qos-pcp">
+          <div class="card">
+            <div class="card-header"><h3>PCP to Queue Mapping</h3></div>
+            <div class="card-body">
+              <p class="help-text">Map 802.1p Priority Code Points to internal queues (0-7)</p>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>PCP</th>
+                    <th>Priority Name</th>
+                    <th>Queue</th>
+                  </tr>
+                </thead>
+                <tbody id="pcp-table-body">
+                  <tr><td>0</td><td>Best Effort (BE)</td><td><select class="pcp-queue" data-pcp="0"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select></td></tr>
+                  <tr><td>1</td><td>Background (BK)</td><td><select class="pcp-queue" data-pcp="1"><option>0</option><option selected>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select></td></tr>
+                  <tr><td>2</td><td>Spare</td><td><select class="pcp-queue" data-pcp="2"><option>0</option><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select></td></tr>
+                  <tr><td>3</td><td>Excellent Effort (EE)</td><td><select class="pcp-queue" data-pcp="3"><option>0</option><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select></td></tr>
+                  <tr><td>4</td><td>Controlled Load (CL)</td><td><select class="pcp-queue" data-pcp="4"><option>0</option><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option></select></td></tr>
+                  <tr><td>5</td><td>Video (VI)</td><td><select class="pcp-queue" data-pcp="5"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option><option>6</option><option>7</option></select></td></tr>
+                  <tr><td>6</td><td>Voice (VO)</td><td><select class="pcp-queue" data-pcp="6"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option selected>6</option><option>7</option></select></td></tr>
+                  <tr><td>7</td><td>Network Control (NC)</td><td><select class="pcp-queue" data-pcp="7"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option selected>7</option></select></td></tr>
+                </tbody>
+              </table>
+              <div class="form-actions">
+                <button class="btn btn-primary" id="pcp-apply-btn">Apply PCP Mapping</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="qos-queues">
+          <div class="card">
+            <div class="card-header"><h3>Queue Configuration</h3></div>
+            <div class="card-body">
+              <p class="help-text">Configure queue scheduling weights (Weighted Round Robin)</p>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Queue</th>
+                    <th>Weight</th>
+                    <th>Strict Priority</th>
+                  </tr>
+                </thead>
+                <tbody id="queue-table-body">
+                  <tr><td>0</td><td><input type="number" class="queue-weight" data-queue="0" value="1" min="1" max="100"></td><td><input type="checkbox" class="queue-strict" data-queue="0"></td></tr>
+                  <tr><td>1</td><td><input type="number" class="queue-weight" data-queue="1" value="2" min="1" max="100"></td><td><input type="checkbox" class="queue-strict" data-queue="1"></td></tr>
+                  <tr><td>2</td><td><input type="number" class="queue-weight" data-queue="2" value="4" min="1" max="100"></td><td><input type="checkbox" class="queue-strict" data-queue="2"></td></tr>
+                  <tr><td>3</td><td><input type="number" class="queue-weight" data-queue="3" value="8" min="1" max="100"></td><td><input type="checkbox" class="queue-strict" data-queue="3"></td></tr>
+                  <tr><td>4</td><td><input type="number" class="queue-weight" data-queue="4" value="16" min="1" max="100"></td><td><input type="checkbox" class="queue-strict" data-queue="4"></td></tr>
+                  <tr><td>5</td><td><input type="number" class="queue-weight" data-queue="5" value="32" min="1" max="100"></td><td><input type="checkbox" class="queue-strict" data-queue="5"></td></tr>
+                  <tr><td>6</td><td><input type="number" class="queue-weight" data-queue="6" value="64" min="1" max="100"></td><td><input type="checkbox" class="queue-strict" data-queue="6" checked></td></tr>
+                  <tr><td>7</td><td><input type="number" class="queue-weight" data-queue="7" value="100" min="1" max="100"></td><td><input type="checkbox" class="queue-strict" data-queue="7" checked></td></tr>
+                </tbody>
+              </table>
+              <div class="form-actions">
+                <button class="btn btn-primary" id="queue-apply-btn">Apply Queue Config</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-content" id="qos-shaper">
+          <div class="card">
+            <div class="card-header"><h3>Port Traffic Shaper</h3></div>
+            <div class="card-body">
+              <p class="help-text">Configure port-based rate limiting</p>
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Port</th>
+                    <th>Ingress Rate (Mbps)</th>
+                    <th>Egress Rate (Mbps)</th>
+                    <th>Burst Size (KB)</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Port 1</td>
+                    <td><input type="number" id="port1-ingress" value="1000" min="0" max="1000"></td>
+                    <td><input type="number" id="port1-egress" value="1000" min="0" max="1000"></td>
+                    <td><input type="number" id="port1-burst" value="64" min="1" max="1024"></td>
+                  </tr>
+                  <tr>
+                    <td>Port 2</td>
+                    <td><input type="number" id="port2-ingress" value="1000" min="0" max="1000"></td>
+                    <td><input type="number" id="port2-egress" value="1000" min="0" max="1000"></td>
+                    <td><input type="number" id="port2-burst" value="64" min="1" max="1024"></td>
+                  </tr>
+                </tbody>
+              </table>
+              <div class="form-actions">
+                <button class="btn btn-primary" id="shaper-apply-btn">Apply Shaper Config</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAS Scheduler Page -->
+      <div class="page" id="scheduler-page">
+        <div class="card">
+          <div class="card-header">
+            <h3>802.1Qbv Time-Aware Shaper</h3>
+            <label class="switch">
+              <input type="checkbox" id="tas-enabled">
+              <span class="slider"></span>
+              <span class="switch-label">Enable TAS</span>
+            </label>
+          </div>
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Port</label>
+                <select id="tas-port">
+                  <option value="1">Port 1</option>
+                  <option value="2">Port 2</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Cycle Time (us)</label>
+                <input type="number" id="tas-cycle" value="1000000" min="1000" max="100000000">
+              </div>
+              <div class="form-group">
+                <label>Base Time</label>
+                <input type="text" id="tas-basetime" value="0" placeholder="nanoseconds">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Gate Control List</h3>
+            <button class="btn btn-secondary btn-sm" id="gcl-add-btn">+ Add Entry</button>
+          </div>
+          <div class="card-body">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Gate States (Q7-Q0)</th>
+                  <th>Duration (us)</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="gcl-table-body">
+                <tr>
+                  <td>1</td>
+                  <td>
+                    <div class="gate-states">
+                      <label><input type="checkbox" checked> Q7</label>
+                      <label><input type="checkbox" checked> Q6</label>
+                      <label><input type="checkbox"> Q5</label>
+                      <label><input type="checkbox"> Q4</label>
+                      <label><input type="checkbox"> Q3</label>
+                      <label><input type="checkbox"> Q2</label>
+                      <label><input type="checkbox"> Q1</label>
+                      <label><input type="checkbox"> Q0</label>
+                    </div>
+                  </td>
+                  <td><input type="number" value="500000" min="1"></td>
+                  <td><button class="btn btn-danger btn-sm">Delete</button></td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td>
+                    <div class="gate-states">
+                      <label><input type="checkbox"> Q7</label>
+                      <label><input type="checkbox"> Q6</label>
+                      <label><input type="checkbox" checked> Q5</label>
+                      <label><input type="checkbox" checked> Q4</label>
+                      <label><input type="checkbox" checked> Q3</label>
+                      <label><input type="checkbox" checked> Q2</label>
+                      <label><input type="checkbox" checked> Q1</label>
+                      <label><input type="checkbox" checked> Q0</label>
+                    </div>
+                  </td>
+                  <td><input type="number" value="500000" min="1"></td>
+                  <td><button class="btn btn-danger btn-sm">Delete</button></td>
+                </tr>
               </tbody>
             </table>
+            <div class="form-actions">
+              <button class="btn btn-primary" id="tas-apply-btn">Apply TAS Config</button>
+            </div>
           </div>
         </div>
       </div>
@@ -216,6 +437,7 @@
         <div class="card">
           <div class="card-header">
             <h3>Device Configuration (YAML)</h3>
+            <button class="btn btn-secondary btn-sm" id="config-copy-btn">Copy</button>
           </div>
           <div class="card-body">
             <pre class="config-viewer" id="config-content"></pre>

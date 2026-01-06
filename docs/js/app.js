@@ -6,6 +6,7 @@ const App = {
   serial: null,
   isConnected: false,
   currentConfig: null,
+  interfaces: [],
 
   init() {
     this.serial = new SerialManager();
@@ -32,7 +33,45 @@ const App = {
       item.addEventListener('click', () => this.navigateTo(item.dataset.page));
     });
 
+    // Setup tabs
+    this.setupTabs();
+
+    // Setup config copy button
+    document.getElementById('config-copy-btn')?.addEventListener('click', () => {
+      const content = document.getElementById('config-content')?.textContent;
+      if (content) {
+        navigator.clipboard.writeText(content);
+        this.showMessage('Copied to clipboard!');
+      }
+    });
+
+    // QoS apply buttons (placeholder - will show message)
+    document.getElementById('pcp-apply-btn')?.addEventListener('click', () => this.showMessage('PCP mapping saved (not sent - iPATCH not implemented yet)'));
+    document.getElementById('queue-apply-btn')?.addEventListener('click', () => this.showMessage('Queue config saved (not sent - iPATCH not implemented yet)'));
+    document.getElementById('shaper-apply-btn')?.addEventListener('click', () => this.showMessage('Shaper config saved (not sent - iPATCH not implemented yet)'));
+    document.getElementById('tas-apply-btn')?.addEventListener('click', () => this.showMessage('TAS config saved (not sent - iPATCH not implemented yet)'));
+
     this.updateStatus('Ready');
+  },
+
+  setupTabs() {
+    document.querySelectorAll('.tabs').forEach(tabContainer => {
+      tabContainer.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const tabId = tab.dataset.tab;
+
+          // Update tab buttons
+          tabContainer.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+
+          // Update tab content
+          const page = tabContainer.closest('.page');
+          page.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.toggle('active', content.id === tabId);
+          });
+        });
+      });
+    });
   },
 
   async toggleConnection() {
@@ -79,7 +118,6 @@ const App = {
     document.getElementById('status-indicator').classList.add('on');
     this.updateStatus('Connected');
 
-    // Load initial data
     await this.refreshData();
   },
 
@@ -95,10 +133,7 @@ const App = {
       this.updateStatus('Loading...');
       const cborData = await this.serial.sendGetRequest();
 
-      // Decode CBOR (cbor-js expects ArrayBuffer)
       const rawConfig = CBOR.decode(cborData.buffer.slice(cborData.byteOffset, cborData.byteOffset + cborData.byteLength));
-
-      // Transform delta-SID encoded data to YANG names
       const config = this.detransform(rawConfig);
       this.currentConfig = config;
 
@@ -111,9 +146,6 @@ const App = {
     }
   },
 
-  /**
-   * Transform delta-SID encoded CBOR to YANG structure
-   */
   detransform(data, parentSid = 0) {
     if (data === null || data === undefined) return data;
 
@@ -128,20 +160,16 @@ const App = {
         const deltaSid = parseInt(key, 10);
 
         if (!isNaN(deltaSid)) {
-          // This is a delta-SID key
           const absoluteSid = parentSid + deltaSid;
           const sidInfo = SID_MAP.map[absoluteSid];
 
           if (sidInfo) {
-            // Extract the leaf name from the full path
             const yangName = this.extractLeafName(sidInfo.path);
             result[yangName] = this.detransform(value, absoluteSid);
           } else {
-            // Unknown SID, keep the number
             result[key] = this.detransform(value, absoluteSid);
           }
         } else {
-          // Regular string key
           result[key] = this.detransform(value, parentSid);
         }
       }
@@ -152,36 +180,19 @@ const App = {
     return data;
   },
 
-  /**
-   * Extract leaf name from YANG path
-   * e.g., "/ietf-interfaces:interfaces/interface/name" -> "name"
-   */
   extractLeafName(path) {
     if (!path) return path;
-
-    // Remove leading slash
     const cleanPath = path.startsWith('/') ? path.slice(1) : path;
-
-    // Split by / and get last part
     const parts = cleanPath.split('/');
-    let lastPart = parts[parts.length - 1];
-
-    // Handle module prefix (e.g., "ietf-interfaces:interfaces" -> "ietf-interfaces:interfaces")
-    // For root elements, keep the full name with module prefix
-    if (parts.length === 1) {
-      return lastPart;
-    }
-
-    // For nested elements, just use the leaf name
-    return lastPart;
+    return parts[parts.length - 1];
   },
 
   displayConfig(config) {
-    // System info (look for ietf-hardware:hardware)
+    // System info
     const hardware = config['ietf-hardware:hardware'] || config['hardware'];
     if (hardware && hardware.component) {
       const chassis = hardware.component.find(c =>
-        c.class === 'iana-hardware:chassis' || c.class === 'chassis'
+        c.class === 'iana-hardware:chassis' || c.class === 'chassis' || c.class === 31003
       );
       if (chassis) {
         this.setText('sys-model', chassis['model-name'] || '--');
@@ -199,10 +210,10 @@ const App = {
     // Interfaces
     const interfaces = config['ietf-interfaces:interfaces'] || config['interfaces'];
     if (interfaces && interfaces.interface) {
+      this.interfaces = interfaces.interface;
       this.updatePorts(interfaces.interface);
     }
 
-    // Show raw config in config tab
     this.displayRawConfig(config);
   },
 
@@ -214,20 +225,17 @@ const App = {
       const prefix = `port${portNum}`;
       const isUp = iface['oper-status'] === 'up';
 
-      // Status badge
       const statusBadge = document.getElementById(`${prefix}-status`);
       if (statusBadge) {
         statusBadge.textContent = isUp ? 'UP' : 'DOWN';
         statusBadge.className = `port-badge ${isUp ? 'up' : 'down'}`;
       }
 
-      // LEDs
       const linkLed = document.getElementById(`${prefix}-link-led`);
       if (linkLed) {
         linkLed.classList.toggle('active', isUp);
       }
 
-      // Stats
       const stats = iface.statistics || {};
       const rxPackets = (stats['in-unicast-pkts'] || 0) +
                         (stats['in-multicast-pkts'] || 0) +
@@ -243,13 +251,11 @@ const App = {
       this.setText(`${prefix}-errors`, this.formatNumber((stats['in-errors'] || 0) + (stats['out-errors'] || 0)));
       this.setText(`${prefix}-discards`, this.formatNumber((stats['in-discards'] || 0) + (stats['out-discards'] || 0)));
 
-      // MAC address
       if (index === 0 && iface['phys-address']) {
         this.setText('sys-mac', iface['phys-address']);
       }
     });
 
-    // Update ports table
     this.updatePortsTable(interfaces);
   },
 
@@ -261,20 +267,35 @@ const App = {
     interfaces.forEach((iface, index) => {
       const portNum = index + 1;
       const isUp = iface['oper-status'] === 'up';
+      const adminUp = iface.enabled !== false;
       const ethernet = iface.ethernet || {};
-      const speed = ethernet.speed || 1;
+      const speed = ethernet.speed || '1G';
 
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td>${portNum}</td>
         <td><span class="status-badge ${isUp ? 'up' : 'down'}">${isUp ? 'UP' : 'DOWN'}</span></td>
-        <td>${speed}G</td>
+        <td><span class="status-badge ${adminUp ? 'up' : 'down'}">${adminUp ? 'ON' : 'OFF'}</span></td>
+        <td>${speed}</td>
+        <td>Full</td>
         <td>${iface['phys-address'] || '--'}</td>
-        <td>1</td>
-        <td>${iface.type || 'ethernetCsmacd'}</td>
+        <td><button class="btn btn-secondary btn-sm" onclick="App.editPort(${portNum})">Edit</button></td>
       `;
       tbody.appendChild(tr);
     });
+  },
+
+  editPort(portNum) {
+    const card = document.getElementById('port-detail-card');
+    if (card) {
+      card.style.display = 'block';
+      document.getElementById('port-detail-num').textContent = portNum;
+
+      const iface = this.interfaces[portNum - 1];
+      if (iface) {
+        document.getElementById('port-admin-status').value = iface.enabled !== false ? 'up' : 'down';
+      }
+    }
   },
 
   displayRawConfig(data) {
@@ -291,6 +312,7 @@ const App = {
 
   clearData() {
     this.currentConfig = null;
+    this.interfaces = [];
     ['sys-model', 'sys-firmware', 'sys-serial', 'sys-temp', 'sys-mac'].forEach(id => {
       this.setText(id, '--');
     });
@@ -328,14 +350,15 @@ const App = {
 
     const titles = {
       dashboard: 'Dashboard',
-      ports: 'Ports',
-      config: 'Configuration'
+      ports: 'Port Configuration',
+      qos: 'QoS Settings',
+      scheduler: 'TAS Scheduler',
+      config: 'Raw Configuration'
     };
 
     document.getElementById('page-title').textContent = titles[page] || page;
   },
 
-  // Utility functions
   setText(id, value) {
     const el = document.getElementById(id);
     if (el) el.textContent = value;
@@ -363,6 +386,10 @@ const App = {
   },
 
   showError(message) {
+    alert(message);
+  },
+
+  showMessage(message) {
     alert(message);
   }
 };
