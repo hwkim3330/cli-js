@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TSN Switch Manager - LAN9662</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">TSN Switch</span>
+          <span class="logo-sub">LAN9662</span>
+        </div>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Overview</div>
+        <ul class="nav-menu">
+          <li class="nav-item active" data-page="dashboard">
+            <svg viewBox="0 0 24 24"><path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/></svg>
+            <span>Dashboard</span>
+          </li>
+          <li class="nav-item" data-page="ports">
+            <svg viewBox="0 0 24 24"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM8 17H6v-4h2v4zm4 0h-2v-7h2v7zm4 0h-2v-2h2v2z"/></svg>
+            <span>Ports</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">L2 Switching</div>
+        <ul class="nav-menu">
+          <li class="nav-item" data-page="vlan">
+            <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14H5v-2h7v2zm7-4H5v-2h14v2zm0-4H5V7h14v2z"/></svg>
+            <span>VLAN</span>
+          </li>
+          <li class="nav-item" data-page="fdb">
+            <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"/></svg>
+            <span>MAC Table</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">QoS</div>
+        <ul class="nav-menu">
+          <li class="nav-item" data-page="qos">
+            <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z"/></svg>
+            <span>QoS Settings</span>
+          </li>
+          <li class="nav-item" data-page="scheduler">
+            <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+            <span>TAS Scheduler</span>
+          </li>
+          <li class="nav-item" data-page="psfp">
+            <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+            <span>PSFP</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="nav-section">
+        <div class="nav-label">Management</div>
+        <ul class="nav-menu">
+          <li class="nav-item" data-page="config">
+            <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+            <span>Configuration</span>
+          </li>
+          <li class="nav-item" data-page="monitor">
+            <svg viewBox="0 0 24 24"><path d="M3.5 18.49l6-6.01 4 4L22 6.92l-1.41-1.41-7.09 7.97-4-4L2 16.99z"/></svg>
+            <span>Monitoring</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="connection-panel">
+          <div class="conn-status">
+            <span id="status-indicator" class="status-led off"></span>
+            <span id="status-text">Disconnected</span>
+          </div>
+          <select id="port-select">
+            <option value="">Select Port...</option>
+          </select>
+          <button id="connect-btn" class="btn-connect">Connect</button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="content">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <h1 id="page-title">Dashboard</h1>
+          <span id="page-subtitle" class="subtitle">System Overview</span>
+        </div>
+        <div class="topbar-right">
+          <div class="system-info">
+            <div class="info-item">
+              <span class="info-label">Temp</span>
+              <span id="sys-temp-top" class="info-value">--°C</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Uptime</span>
+              <span id="sys-uptime" class="info-value">--:--:--</span>
+            </div>
+          </div>
+          <button id="refresh-btn" class="btn-icon" title="Refresh">
+            <svg viewBox="0 0 24 24"><path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Page Container -->
+      <div id="page-container">
+        <!-- Dashboard Page -->
+        <div id="dashboard-page" class="page active">
+          <!-- Switch Diagram -->
+          <div class="switch-diagram">
+            <div class="switch-body">
+              <div class="switch-label">LAN9662 TSN Switch</div>
+              <div class="ports-row">
+                <div class="port-slot" id="port-slot-1">
+                  <div class="port-visual">
+                    <div class="port-leds">
+                      <span class="led link" id="port1-link-led"></span>
+                      <span class="led activity" id="port1-act-led"></span>
+                    </div>
+                    <div class="port-connector"></div>
+                  </div>
+                  <div class="port-label">Port 1</div>
+                </div>
+                <div class="port-slot" id="port-slot-2">
+                  <div class="port-visual">
+                    <div class="port-leds">
+                      <span class="led link" id="port2-link-led"></span>
+                      <span class="led activity" id="port2-act-led"></span>
+                    </div>
+                    <div class="port-connector"></div>
+                  </div>
+                  <div class="port-label">Port 2</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- System Info Cards -->
+          <div class="dashboard-grid">
+            <div class="card system-card">
+              <div class="card-header">
+                <h3>System Information</h3>
+              </div>
+              <div class="card-body">
+                <table class="info-table">
+                  <tr><td>Model</td><td id="sys-model">--</td></tr>
+                  <tr><td>Firmware</td><td id="sys-firmware">--</td></tr>
+                  <tr><td>Serial Number</td><td id="sys-serial">--</td></tr>
+                  <tr><td>MAC Address</td><td id="sys-mac">--</td></tr>
+                  <tr><td>Temperature</td><td id="sys-temp">--</td></tr>
+                </table>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3>Port 1 Statistics</h3>
+                <span id="port1-status" class="port-badge down">DOWN</span>
+              </div>
+              <div class="card-body">
+                <div class="stats-row">
+                  <div class="stat-item">
+                    <span class="stat-label">RX Packets</span>
+                    <span id="port1-rx" class="stat-value">0</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">TX Packets</span>
+                    <span id="port1-tx" class="stat-value">0</span>
+                  </div>
+                </div>
+                <div class="stats-row">
+                  <div class="stat-item">
+                    <span class="stat-label">RX Bytes</span>
+                    <span id="port1-rx-bytes" class="stat-value">0</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">TX Bytes</span>
+                    <span id="port1-tx-bytes" class="stat-value">0</span>
+                  </div>
+                </div>
+                <div class="stats-row">
+                  <div class="stat-item error">
+                    <span class="stat-label">Errors</span>
+                    <span id="port1-errors" class="stat-value">0</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Discards</span>
+                    <span id="port1-discards" class="stat-value">0</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="card">
+              <div class="card-header">
+                <h3>Port 2 Statistics</h3>
+                <span id="port2-status" class="port-badge down">DOWN</span>
+              </div>
+              <div class="card-body">
+                <div class="stats-row">
+                  <div class="stat-item">
+                    <span class="stat-label">RX Packets</span>
+                    <span id="port2-rx" class="stat-value">0</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">TX Packets</span>
+                    <span id="port2-tx" class="stat-value">0</span>
+                  </div>
+                </div>
+                <div class="stats-row">
+                  <div class="stat-item">
+                    <span class="stat-label">RX Bytes</span>
+                    <span id="port2-rx-bytes" class="stat-value">0</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">TX Bytes</span>
+                    <span id="port2-tx-bytes" class="stat-value">0</span>
+                  </div>
+                </div>
+                <div class="stats-row">
+                  <div class="stat-item error">
+                    <span class="stat-label">Errors</span>
+                    <span id="port2-errors" class="stat-value">0</span>
+                  </div>
+                  <div class="stat-item">
+                    <span class="stat-label">Discards</span>
+                    <span id="port2-discards" class="stat-value">0</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ports Page -->
+        <div id="ports-page" class="page">
+          <div class="page-content">
+            <div class="card full-width">
+              <div class="card-header">
+                <h3>Port Configuration</h3>
+              </div>
+              <div class="card-body">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Port</th>
+                      <th>Status</th>
+                      <th>Speed</th>
+                      <th>MAC Address</th>
+                      <th>PVID</th>
+                      <th>Type</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ports-table-body">
+                    <tr>
+                      <td>1</td>
+                      <td><span class="status-badge down">DOWN</span></td>
+                      <td>1G</td>
+                      <td>--</td>
+                      <td>1</td>
+                      <td>ethernetCsmacd</td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td><span class="status-badge down">DOWN</span></td>
+                      <td>1G</td>
+                      <td>--</td>
+                      <td>1</td>
+                      <td>ethernetCsmacd</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- QoS Page -->
+        <div id="qos-page" class="page">
+          <div class="page-content">
+            <div class="tabs">
+              <button class="tab active" data-tab="qos-priority">Priority Mapping</button>
+              <button class="tab" data-tab="qos-scheduler">Scheduler</button>
+              <button class="tab" data-tab="qos-shaper">Shaper</button>
+              <button class="tab" data-tab="qos-policer">Policer</button>
+            </div>
+
+            <div id="qos-priority" class="tab-content active">
+              <div class="card">
+                <div class="card-header">
+                  <h3>PCP to Priority Mapping</h3>
+                  <select id="qos-port-select" class="inline-select">
+                    <option value="1">Port 1</option>
+                    <option value="2">Port 2</option>
+                  </select>
+                </div>
+                <div class="card-body">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>PCP</th>
+                        <th>Priority (Traffic Class)</th>
+                        <th>Drop Eligible</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr><td>0</td><td><select class="tc-select"><option>0</option><option selected>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select></td><td><input type="checkbox"></td></tr>
+                      <tr><td>1</td><td><select class="tc-select"><option selected>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select></td><td><input type="checkbox"></td></tr>
+                      <tr><td>2</td><td><select class="tc-select"><option>0</option><option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select></td><td><input type="checkbox"></td></tr>
+                      <tr><td>3</td><td><select class="tc-select"><option>0</option><option>1</option><option>2</option><option selected>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select></td><td><input type="checkbox"></td></tr>
+                      <tr><td>4</td><td><select class="tc-select"><option>0</option><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>7</option></select></td><td><input type="checkbox"></td></tr>
+                      <tr><td>5</td><td><select class="tc-select"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option><option>6</option><option>7</option></select></td><td><input type="checkbox"></td></tr>
+                      <tr><td>6</td><td><select class="tc-select"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option selected>6</option><option>7</option></select></td><td><input type="checkbox"></td></tr>
+                      <tr><td>7</td><td><select class="tc-select"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option selected>7</option></select></td><td><input type="checkbox"></td></tr>
+                    </tbody>
+                  </table>
+                  <div class="form-actions">
+                    <button class="btn btn-primary">Apply</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="qos-scheduler" class="tab-content">
+              <div class="card">
+                <div class="card-header">
+                  <h3>Weighted Round Robin (WRR) Scheduler</h3>
+                </div>
+                <div class="card-body">
+                  <p class="help-text">Allocate bandwidth percentage to each traffic class. Classes not listed use strict scheduling.</p>
+                  <div class="wrr-config">
+                    <div class="wrr-row">
+                      <label>TC 0:</label>
+                      <input type="number" value="10" min="0" max="100"> %
+                    </div>
+                    <div class="wrr-row">
+                      <label>TC 1:</label>
+                      <input type="number" value="20" min="0" max="100"> %
+                    </div>
+                    <div class="wrr-row">
+                      <label>TC 2:</label>
+                      <input type="number" value="30" min="0" max="100"> %
+                    </div>
+                    <div class="wrr-row">
+                      <label>TC 3:</label>
+                      <input type="number" value="40" min="0" max="100"> %
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button class="btn btn-primary">Apply</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="qos-shaper" class="tab-content">
+              <div class="card">
+                <div class="card-header">
+                  <h3>Traffic Shaper Configuration</h3>
+                </div>
+                <div class="card-body">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Traffic Class</th>
+                        <th>Shaper Type</th>
+                        <th>Rate (Mbps)</th>
+                        <th>Burst (Bytes)</th>
+                        <th>Enabled</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>TC 7 (Highest)</td>
+                        <td><select><option>Disabled</option><option>CBS</option><option>SLB</option></select></td>
+                        <td><input type="number" value="100"></td>
+                        <td><input type="number" value="2000"></td>
+                        <td><input type="checkbox"></td>
+                      </tr>
+                      <tr>
+                        <td>TC 6</td>
+                        <td><select><option>Disabled</option><option>CBS</option><option>SLB</option></select></td>
+                        <td><input type="number" value="100"></td>
+                        <td><input type="number" value="2000"></td>
+                        <td><input type="checkbox"></td>
+                      </tr>
+                      <tr>
+                        <td>TC 5</td>
+                        <td><select><option>Disabled</option><option>CBS</option><option>SLB</option></select></td>
+                        <td><input type="number" value="100"></td>
+                        <td><input type="number" value="2000"></td>
+                        <td><input type="checkbox"></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  <div class="form-actions">
+                    <button class="btn btn-primary">Apply</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="qos-policer" class="tab-content">
+              <div class="card">
+                <div class="card-header">
+                  <h3>Port Policers</h3>
+                  <button class="btn btn-sm">+ Add Policer</button>
+                </div>
+                <div class="card-body">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Index</th>
+                        <th>Frame Type</th>
+                        <th>Rate</th>
+                        <th>Burst Size</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td colspan="5" class="empty-row">No policers configured</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAS Scheduler Page -->
+        <div id="scheduler-page" class="page">
+          <div class="page-content">
+            <div class="card">
+              <div class="card-header">
+                <h3>IEEE 802.1Qbv Time-Aware Shaper</h3>
+                <div class="header-controls">
+                  <select id="tas-port-select">
+                    <option value="1">Port 1</option>
+                    <option value="2">Port 2</option>
+                  </select>
+                  <label class="switch-label">
+                    <input type="checkbox" id="tas-enabled">
+                    <span>Enabled</span>
+                  </label>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="tas-config">
+                  <div class="config-section">
+                    <h4>Cycle Configuration</h4>
+                    <div class="config-row">
+                      <label>Cycle Time:</label>
+                      <input type="number" id="cycle-time-value" value="1000" min="1">
+                      <select id="cycle-time-unit">
+                        <option value="1000">μs</option>
+                        <option value="1000000" selected>ms</option>
+                      </select>
+                    </div>
+                    <div class="config-row">
+                      <label>Base Time:</label>
+                      <input type="number" id="base-time-sec" value="0" min="0"> s
+                      <input type="number" id="base-time-ns" value="0" min="0"> ns
+                    </div>
+                  </div>
+
+                  <div class="config-section">
+                    <h4>Gate Control List</h4>
+                    <div class="gcl-visual">
+                      <div class="gcl-timeline">
+                        <div class="timeline-header">
+                          <span class="tc-col">TC</span>
+                          <div class="timeline-bar-header">
+                            <span>0%</span><span>25%</span><span>50%</span><span>75%</span><span>100%</span>
+                          </div>
+                        </div>
+                        <div id="gcl-rows">
+                          <!-- Generated by JS -->
+                        </div>
+                      </div>
+                    </div>
+
+                    <table class="data-table gcl-table">
+                      <thead>
+                        <tr>
+                          <th>Entry</th>
+                          <th>TC7</th><th>TC6</th><th>TC5</th><th>TC4</th>
+                          <th>TC3</th><th>TC2</th><th>TC1</th><th>TC0</th>
+                          <th>Duration (ns)</th>
+                          <th></th>
+                        </tr>
+                      </thead>
+                      <tbody id="gcl-table-body">
+                        <tr>
+                          <td>1</td>
+                          <td><input type="checkbox" checked></td>
+                          <td><input type="checkbox" checked></td>
+                          <td><input type="checkbox" checked></td>
+                          <td><input type="checkbox" checked></td>
+                          <td><input type="checkbox" checked></td>
+                          <td><input type="checkbox" checked></td>
+                          <td><input type="checkbox" checked></td>
+                          <td><input type="checkbox" checked></td>
+                          <td><input type="number" value="1000000" class="duration-input"></td>
+                          <td><button class="btn-icon delete-entry">×</button></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <button id="add-gcl-entry" class="btn btn-sm">+ Add Entry</button>
+                  </div>
+                </div>
+
+                <div class="form-actions">
+                  <button class="btn btn-secondary">Reset</button>
+                  <button id="apply-tas" class="btn btn-primary">Apply Schedule</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VLAN Page -->
+        <div id="vlan-page" class="page">
+          <div class="page-content">
+            <div class="card">
+              <div class="card-header">
+                <h3>VLAN Configuration</h3>
+                <button class="btn btn-sm">+ Add VLAN</button>
+              </div>
+              <div class="card-body">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>VLAN ID</th>
+                      <th>Name</th>
+                      <th>Port 1</th>
+                      <th>Port 2</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="vlan-table-body">
+                    <tr>
+                      <td>1</td>
+                      <td>default</td>
+                      <td><span class="vlan-tag tagged">Tagged</span></td>
+                      <td><span class="vlan-tag tagged">Tagged</span></td>
+                      <td><button class="btn-icon">Edit</button></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MAC Table Page -->
+        <div id="fdb-page" class="page">
+          <div class="page-content">
+            <div class="card">
+              <div class="card-header">
+                <h3>MAC Address Table</h3>
+                <button id="refresh-fdb" class="btn btn-sm">Refresh</button>
+              </div>
+              <div class="card-body">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>MAC Address</th>
+                      <th>VLAN</th>
+                      <th>Port</th>
+                      <th>Type</th>
+                    </tr>
+                  </thead>
+                  <tbody id="fdb-table-body">
+                    <tr>
+                      <td colspan="4" class="empty-row">No entries</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PSFP Page -->
+        <div id="psfp-page" class="page">
+          <div class="page-content">
+            <div class="tabs">
+              <button class="tab active" data-tab="psfp-streams">Stream Filters</button>
+              <button class="tab" data-tab="psfp-gates">Stream Gates</button>
+              <button class="tab" data-tab="psfp-meters">Flow Meters</button>
+            </div>
+
+            <div id="psfp-streams" class="tab-content active">
+              <div class="card">
+                <div class="card-header">
+                  <h3>Stream Filter Instances</h3>
+                  <span class="badge">Max: 64</span>
+                </div>
+                <div class="card-body">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Index</th>
+                        <th>Stream Handle</th>
+                        <th>Priority</th>
+                        <th>Gate ID</th>
+                        <th>Meter ID</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td colspan="5" class="empty-row">No stream filters configured</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div id="psfp-gates" class="tab-content">
+              <div class="card">
+                <div class="card-header">
+                  <h3>Stream Gate Instances</h3>
+                  <span class="badge">Max: 64</span>
+                </div>
+                <div class="card-body">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Index</th>
+                        <th>State</th>
+                        <th>IPV</th>
+                        <th>Cycle Time</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td colspan="4" class="empty-row">No stream gates configured</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <div id="psfp-meters" class="tab-content">
+              <div class="card">
+                <div class="card-header">
+                  <h3>Flow Meter Instances</h3>
+                  <span class="badge">Max: 64</span>
+                </div>
+                <div class="card-body">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Index</th>
+                        <th>CIR</th>
+                        <th>CBS</th>
+                        <th>EIR</th>
+                        <th>EBS</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td colspan="5" class="empty-row">No flow meters configured</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Configuration Page -->
+        <div id="config-page" class="page">
+          <div class="page-content">
+            <div class="card full-height">
+              <div class="card-header">
+                <h3>Device Configuration (YAML)</h3>
+                <div class="header-controls">
+                  <button id="load-config-btn" class="btn btn-sm">Load</button>
+                  <button id="download-config-btn" class="btn btn-sm">Download</button>
+                  <button id="apply-config-btn" class="btn btn-primary btn-sm">Apply</button>
+                </div>
+              </div>
+              <div class="card-body">
+                <textarea id="config-yaml" class="yaml-editor" placeholder="Click 'Load' to fetch configuration..."></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Monitoring Page -->
+        <div id="monitor-page" class="page">
+          <div class="page-content">
+            <div class="card">
+              <div class="card-header">
+                <h3>Traffic Statistics</h3>
+              </div>
+              <div class="card-body">
+                <div class="chart-container">
+                  <canvas id="traffic-chart" width="800" height="250"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="stats-cards">
+              <div class="stat-card">
+                <div class="stat-icon rx"></div>
+                <div class="stat-info">
+                  <span class="stat-title">Port 1 RX</span>
+                  <span id="mon-port1-rx" class="stat-number">0</span>
+                  <span class="stat-unit">pkt/s</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon tx"></div>
+                <div class="stat-info">
+                  <span class="stat-title">Port 1 TX</span>
+                  <span id="mon-port1-tx" class="stat-number">0</span>
+                  <span class="stat-unit">pkt/s</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon rx"></div>
+                <div class="stat-info">
+                  <span class="stat-title">Port 2 RX</span>
+                  <span id="mon-port2-rx" class="stat-number">0</span>
+                  <span class="stat-unit">pkt/s</span>
+                </div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon tx"></div>
+                <div class="stat-info">
+                  <span class="stat-title">Port 2 TX</span>
+                  <span id="mon-port2-tx" class="stat-number">0</span>
+                  <span class="stat-unit">pkt/s</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script src="js/config-editor.js"></script>
+  <script src="js/monitor.js"></script>
+  <script src="js/scheduler.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

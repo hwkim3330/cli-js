@@ -1,0 +1,26 @@
+{
+  "name": "keti-tsn-cli",
+  "version": "0.1.0",
+  "description": "TSN Switch (LAN9662) Configuration CLI Tool",
+  "type": "module",
+  "bin": {
+    "keti-tsn": "./bin/keti-tsn.js"
+  },
+  "scripts": {
+    "start": "node bin/keti-tsn.js",
+    "encode": "node tsc2cbor/tsc2cbor.js",
+    "decode": "node tsc2cbor/cbor2tsc.js"
+  },
+  "dependencies": {
+    "cbor": "^9.0.0",
+    "cbor-x": "^1.6.0",
+    "commander": "^12.0.0",
+    "express": "^5.2.1",
+    "js-yaml": "^4.1.0",
+    "serialport": "^12.0.0",
+    "ws": "^8.19.0",
+    "xml2js": "^0.6.2"
+  },
+  "author": "KETI",
+  "license": "ISC"
+}

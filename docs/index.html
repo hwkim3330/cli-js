@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TSN Switch Manager</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>&#128268;</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h1>TSN Switch</h1>
+        <span class="version">Web Serial</span>
+      </div>
+
+      <nav class="nav">
+        <div class="nav-section">
+          <span class="nav-section-title">Overview</span>
+          <a class="nav-item active" data-page="dashboard">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="7" height="7"></rect>
+              <rect x="14" y="3" width="7" height="7"></rect>
+              <rect x="14" y="14" width="7" height="7"></rect>
+              <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+            Dashboard
+          </a>
+          <a class="nav-item" data-page="ports">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="6" width="20" height="12" rx="2"></rect>
+              <line x1="6" y1="10" x2="6" y2="14"></line>
+              <line x1="10" y1="10" x2="10" y2="14"></line>
+            </svg>
+            Ports
+          </a>
+          <a class="nav-item" data-page="config">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="3"></circle>
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+            Configuration
+          </a>
+        </div>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="connection-status">
+          <span class="status-indicator" id="status-indicator"></span>
+          <span id="status-text">Ready</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <h2 id="page-title">Dashboard</h2>
+        </div>
+        <div class="topbar-right">
+          <button class="btn btn-secondary" id="refresh-btn">Refresh</button>
+          <button class="btn btn-primary" id="connect-btn">Connect</button>
+        </div>
+      </header>
+
+      <!-- Dashboard Page -->
+      <div class="page active" id="dashboard-page">
+        <!-- Switch Diagram -->
+        <div class="card switch-diagram">
+          <div class="switch-body">
+            <div class="switch-label">LAN9662 TSN Switch</div>
+            <div class="switch-ports">
+              <div class="switch-port">
+                <div class="port-leds">
+                  <span class="led link" id="port1-link-led" title="Link"></span>
+                  <span class="led act" id="port1-act-led" title="Activity"></span>
+                </div>
+                <div class="port-connector"></div>
+                <span class="port-label">Port 1</span>
+              </div>
+              <div class="switch-port">
+                <div class="port-leds">
+                  <span class="led link" id="port2-link-led" title="Link"></span>
+                  <span class="led act" id="port2-act-led" title="Activity"></span>
+                </div>
+                <div class="port-connector"></div>
+                <span class="port-label">Port 2</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- System Info & Port Stats -->
+        <div class="grid grid-2">
+          <!-- System Info -->
+          <div class="card">
+            <div class="card-header">
+              <h3>System Information</h3>
+            </div>
+            <div class="card-body">
+              <table class="info-table">
+                <tr><td>Model</td><td id="sys-model">--</td></tr>
+                <tr><td>Firmware</td><td id="sys-firmware">--</td></tr>
+                <tr><td>Serial</td><td id="sys-serial">--</td></tr>
+                <tr><td>MAC Address</td><td id="sys-mac">--</td></tr>
+                <tr><td>Temperature</td><td id="sys-temp">--</td></tr>
+              </table>
+            </div>
+          </div>
+
+          <!-- Port 1 Stats -->
+          <div class="card">
+            <div class="card-header">
+              <h3>Port 1</h3>
+              <span class="port-badge down" id="port1-status">DOWN</span>
+            </div>
+            <div class="card-body">
+              <div class="stats-grid">
+                <div class="stat">
+                  <span class="stat-label">RX Packets</span>
+                  <span class="stat-value" id="port1-rx">0</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-label">TX Packets</span>
+                  <span class="stat-value" id="port1-tx">0</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-label">RX Bytes</span>
+                  <span class="stat-value" id="port1-rx-bytes">0 B</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-label">TX Bytes</span>
+                  <span class="stat-value" id="port1-tx-bytes">0 B</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-label">Errors</span>
+                  <span class="stat-value" id="port1-errors">0</span>
+                </div>
+                <div class="stat">
+                  <span class="stat-label">Discards</span>
+                  <span class="stat-value" id="port1-discards">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Port 2 Stats -->
+        <div class="card">
+          <div class="card-header">
+            <h3>Port 2</h3>
+            <span class="port-badge down" id="port2-status">DOWN</span>
+          </div>
+          <div class="card-body">
+            <div class="stats-grid">
+              <div class="stat">
+                <span class="stat-label">RX Packets</span>
+                <span class="stat-value" id="port2-rx">0</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">TX Packets</span>
+                <span class="stat-value" id="port2-tx">0</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">RX Bytes</span>
+                <span class="stat-value" id="port2-rx-bytes">0 B</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">TX Bytes</span>
+                <span class="stat-value" id="port2-tx-bytes">0 B</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Errors</span>
+                <span class="stat-value" id="port2-errors">0</span>
+              </div>
+              <div class="stat">
+                <span class="stat-label">Discards</span>
+                <span class="stat-value" id="port2-discards">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ports Page -->
+      <div class="page" id="ports-page">
+        <div class="card">
+          <div class="card-header">
+            <h3>Port Status</h3>
+          </div>
+          <div class="card-body">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Port</th>
+                  <th>Status</th>
+                  <th>Speed</th>
+                  <th>MAC Address</th>
+                  <th>VLAN</th>
+                  <th>Type</th>
+                </tr>
+              </thead>
+              <tbody id="ports-table-body">
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Configuration Page -->
+      <div class="page" id="config-page">
+        <div class="card">
+          <div class="card-header">
+            <h3>Device Configuration (YAML)</h3>
+          </div>
+          <div class="card-body">
+            <pre class="config-viewer" id="config-content"></pre>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- External Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/cbor-js@0.1.0/cbor.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+
+  <!-- App Scripts -->
+  <script src="js/mup1.js"></script>
+  <script src="js/coap.js"></script>
+  <script src="js/serial.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

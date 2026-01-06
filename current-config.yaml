@@ -1,0 +1,621 @@
+ietf-interfaces:interfaces:
+  interface:
+    - if-index: 1
+      name: '1'
+      oper-status: down
+      phys-address: CA-07-03-1E-70-01
+      statistics:
+        in-broadcast-pkts: 0
+        in-discards: 0
+        in-errors: 0
+        in-multicast-pkts: 0
+        in-octets: 0
+        in-unicast-pkts: 0
+        in-unknown-protos: 0
+        out-broadcast-pkts: 0
+        out-discards: 0
+        out-errors: 0
+        out-multicast-pkts: 0
+        out-octets: 0
+        out-unicast-pkts: 0
+      type: ethernetCsmacd
+      ieee802-ethernet-interface:ethernet:
+        auto-negotiation: {}
+        flow-control:
+          pause:
+            statistics:
+              in-frames-pause: 0
+              out-frames-pause: 0
+        speed: 1
+        statistics:
+          frame:
+            in-error-fcs-frames: 0
+            in-error-oversize-frames: 0
+            in-error-undersize-frames: 0
+            in-total-frames: 0
+            out-frames: 0
+      ieee802-dot1q-bridge:bridge-port:
+        pcp-decoding-table:
+          pcp-decoding-map: []
+        pcp-encoding-table:
+          pcp-encoding-map: []
+        port-type: 7008
+        statistics:
+          discard-inbound: 0
+        ieee802-dot1q-preemption-bridge:frame-preemption-parameters:
+          frame-preemption-status-table: {}
+        ieee802-dot1q-sched-bridge:gate-parameter-table:
+          admin-base-time:
+            nanoseconds: 0
+            seconds: 0
+          admin-control-list:
+            gate-control-entry: []
+          admin-cycle-time:
+            denominator: 1
+            numerator: 0
+          admin-cycle-time-extension: 256
+          config-change: false
+          config-change-error: 0
+          config-change-time:
+            nanoseconds: 0
+            seconds: 0
+          config-pending: false
+          current-time:
+            nanoseconds: 28199486
+            seconds: 4174
+          oper-base-time:
+            nanoseconds: 0
+            seconds: 0
+          oper-control-list:
+            gate-control-entry: []
+          oper-cycle-time:
+            denominator: 1
+            numerator: 0
+          oper-cycle-time-extension: 256
+          oper-gate-states: 255
+          queue-max-sdu-table:
+            - traffic-class: 0
+            - traffic-class: 1
+            - traffic-class: 2
+            - traffic-class: 3
+            - traffic-class: 4
+            - traffic-class: 5
+            - traffic-class: 6
+            - traffic-class: 7
+          supported-cycle-max:
+            denominator: 1000000001
+            numerator: 1000000000
+          supported-interval-max: 4294967295
+          supported-list-max: 8
+          tick-granularity: 60
+      mchp-velocitysp-port:eth-port:
+        config:
+          speed: 1
+        statistics:
+          rx-1024-1518-octets: 0
+          rx-128-255-octets: 0
+          rx-1519-max-octets: 0
+          rx-256-511-octets: 0
+          rx-512-1023-octets: 0
+          rx-64-octets: 0
+          rx-65-127-octets: 0
+          rx-fragments: 0
+          rx-jabbers: 0
+          rx-mm-asm-errors: 0
+          rx-mm-asm-packets: 0
+          rx-mm-fragments: 0
+          rx-mm-smd-errors: 0
+          traffic-class:
+            - rx-packets: 0
+              traffic-class: 0
+              tx-packets: 0
+            - rx-packets: 0
+              traffic-class: 1
+              tx-packets: 0
+            - rx-packets: 0
+              traffic-class: 2
+              tx-packets: 0
+            - rx-packets: 0
+              traffic-class: 3
+              tx-packets: 0
+            - rx-packets: 0
+              traffic-class: 4
+              tx-packets: 0
+            - rx-packets: 0
+              traffic-class: 5
+              tx-packets: 0
+            - rx-packets: 0
+              traffic-class: 6
+              tx-packets: 0
+            - rx-packets: 0
+              traffic-class: 7
+              tx-packets: 0
+          tx-1024-1518-octets: 0
+          tx-128-255-octets: 0
+          tx-1519-max-octets: 0
+          tx-256-511-octets: 0
+          tx-512-1023-octets: 0
+          tx-64-octets: 0
+          tx-65-127-octets: 0
+          tx-mm-fragments: 0
+          tx-mm-holds: 0
+        status:
+          flow-control: 0
+          oper-info: 0
+      mchp-velocitysp-port:eth-qos:
+        config:
+          traffic-class-schedulers-bandwidth: []
+          traffic-class-shapers: []
+          port-policers: []
+      mchp-velocitysp-aggr:aggr-port:
+        config: {}
+        statistics:
+          rx-illegal: 0
+          rx-lacp-pdu: 0
+          rx-marker-pdu: 0
+          rx-marker-response-pdu: 0
+          rx-unknown: 0
+          tx-lacp-pdu: 0
+          tx-marker-pdu: 0
+          tx-marker-response-pdu: 0
+        status:
+          actor-key: 0
+          actor-port: 0
+          actor-port-priority: 32768
+          actor-state: !!binary QA==
+          actor-system-mac: CA-07-03-1E-70-00
+          actor-system-priority: 32768
+          aggr-name: NONE
+          partner-key: 0
+          partner-port: 0
+          partner-port-priority: 0
+          partner-state: !!binary CA==
+          partner-system-mac: 00-00-00-00-00-00
+          partner-system-priority: 0
+      mchp-velocitysp-acl:acl-port:
+        egress-port-list: []
+        rx-count: 0
+    - if-index: 2
+      name: '2'
+      oper-status: down
+      phys-address: CA-07-03-1E-70-02
+      statistics:
+        in-broadcast-pkts: 0
+        in-discards: 0
+        in-errors: 0
+        in-multicast-pkts: 0
+        in-octets: 0
+        in-unicast-pkts: 0
+        in-unknown-protos: 0
+        out-broadcast-pkts: 0
+        out-discards: 0
+        out-errors: 0
+        out-multicast-pkts: 0
+        out-octets: 0
+        out-unicast-pkts: 0
+      type: ethernetCsmacd
+      ieee802-ethernet-interface:ethernet:
+        auto-negotiation: {}
+        flow-control:
+          pause:
+            statistics:
+              in-frames-pause: 0
+              out-frames-pause: 0
+        speed: 1
+        statistics:
+          frame:
+            in-error-fcs-frames: 0
+            in-error-oversize-frames: 0
+            in-error-undersize-frames: 0
+            in-total-frames: 0
+            out-frames: 0
+      ieee802-dot1q-bridge:bridge-port:
+        pcp-decoding-table:
+          pcp-decoding-map: []
+        pcp-encoding-table:
+          pcp-encoding-map: []
+        port-type: 7008
+        statistics:
+          discard-inbound: 0
+        ieee802-dot1q-preemption-bridge:frame-preemption-parameters:
+          frame-preemption-status-table: {}
+        ieee802-dot1q-sched-bridge:gate-parameter-table:
+          admin-base-time:
+            nanoseconds: 0
+            seconds: 0
+          admin-control-list:
+            gate-control-entry: []
+          admin-cycle-time:
+            denominator: 1
+            numerator: 0
+          admin-cycle-time-extension: 256
+          config-change: false
+          config-change-error: 0
+          config-change-time:
+            nanoseconds: 0
+            seconds: 0
+          config-pending: false
+          current-time:
+            nanoseconds: 31199456
+            seconds: 4174
+          oper-base-time:
+            nanoseconds: 0
+            seconds: 0
+          oper-control-list:
+            gate-control-entry: []
+          oper-cycle-time:
+            denominator: 1
+            numerator: 0
+          oper-cycle-time-extension: 256
+          oper-gate-states: 255
+          queue-max-sdu-table:
+            - traffic-class: 0
+            - traffic-class: 1
+            - traffic-class: 2
+            - traffic-class: 3
+            - traffic-class: 4
+            - traffic-class: 5
+            - traffic-class: 6
+            - traffic-class: 7
+          supported-cycle-max:
+            denominator: 1000000001
+            numerator: 1000000000
+          supported-interval-max: 4294967295
+          supported-list-max: 8
+          tick-granularity: 60
+      mchp-velocitysp-port:eth-port:
+        config:
+          speed: 1
+        statistics:
+          rx-1024-1518-octets: 0
+          rx-128-255-octets: 0
+          rx-1519-max-octets: 0
+          rx-256-511-octets: 0
+          rx-512-1023-octets: 0
+          rx-64-octets: 0
+          rx-65-127-octets: 0
+          rx-fragments: 0
+          rx-jabbers: 0
+          rx-mm-asm-errors: 0
+          rx-mm-asm-packets: 0
+          rx-mm-fragments: 0
+          rx-mm-smd-errors: 0
+          traffic-class:
+            - rx-packets: 0
+              traffic-class: 0
+              tx-packets: 0
+            - rx-packets: 0
+              traffic-class: 1
+              tx-packets: 0
+            - rx-packets: 0
+              traffic-class: 2
+              tx-packets: 0
+            - rx-packets: 0
+              traffic-class: 3
+              tx-packets: 0
+            - rx-packets: 0
+              traffic-class: 4
+              tx-packets: 0
+            - rx-packets: 0
+              traffic-class: 5
+              tx-packets: 0
+            - rx-packets: 0
+              traffic-class: 6
+              tx-packets: 0
+            - rx-packets: 0
+              traffic-class: 7
+              tx-packets: 0
+          tx-1024-1518-octets: 0
+          tx-128-255-octets: 0
+          tx-1519-max-octets: 0
+          tx-256-511-octets: 0
+          tx-512-1023-octets: 0
+          tx-64-octets: 0
+          tx-65-127-octets: 0
+          tx-mm-fragments: 0
+          tx-mm-holds: 0
+        status:
+          flow-control: 0
+          oper-info: 0
+      mchp-velocitysp-port:eth-qos:
+        config:
+          traffic-class-schedulers-bandwidth: []
+          traffic-class-shapers: []
+          port-policers: []
+      mchp-velocitysp-aggr:aggr-port:
+        config: {}
+        statistics:
+          rx-illegal: 0
+          rx-lacp-pdu: 0
+          rx-marker-pdu: 0
+          rx-marker-response-pdu: 0
+          rx-unknown: 0
+          tx-lacp-pdu: 0
+          tx-marker-pdu: 0
+          tx-marker-response-pdu: 0
+        status:
+          actor-key: 0
+          actor-port: 1
+          actor-port-priority: 32768
+          actor-state: !!binary QA==
+          actor-system-mac: CA-07-03-1E-70-00
+          actor-system-priority: 32768
+          aggr-name: NONE
+          partner-key: 0
+          partner-port: 0
+          partner-port-priority: 0
+          partner-state: !!binary CA==
+          partner-system-mac: 00-00-00-00-00-00
+          partner-system-priority: 0
+      mchp-velocitysp-acl:acl-port:
+        egress-port-list: []
+        rx-count: 0
+ieee802-dot1q-bridge:bridges:
+  bridge:
+    - component:
+        - bridge-vlan:
+            vid-to-fid: []
+          filtering-database:
+            filtering-entry: []
+            vlan-registration-entry:
+              - database-id: 0
+                entry-type: static
+                port-map:
+                  - static-vlan-registration-entries:
+                      vlan-transmitted: 1
+                    port-ref: 1
+                  - static-vlan-registration-entries:
+                      vlan-transmitted: 1
+                    port-ref: 2
+                vids: '1'
+            mchp-velocitysp-bridge:unknown-mac-flooding:
+              ipv4-mc-disable: []
+              ipv6-mc-disable: []
+              mc-disable: []
+              uc-disable: []
+          name: c0
+          ports: 2
+          ieee802-dot1q-psfp-bridge:flow-meters:
+            flow-meter-instance-table: []
+            max-flow-meter-instances: 64
+          ieee802-dot1q-psfp-bridge:stream-filters:
+            max-stream-filter-instances: 64
+            stream-filter-instance-table: []
+          ieee802-dot1q-psfp-bridge:stream-gates:
+            max-stream-gate-instances: 64
+            stream-gate-instance-table: []
+            supported-list-max: 4
+      name: b0
+ieee802-dot1ab-lldp:lldp:
+  message-fast-tx: 1
+  message-tx-hold-multiplier: 4
+  message-tx-interval: 30
+  port:
+    - dest-mac-address: 01-80-C2-00-00-0E
+      name: '1'
+      remote-systems-data: []
+      rx-statistics:
+        error-frames: 0
+        total-discarded-frames: 0
+        total-discarded-tlvs: 0
+        total-frames: 0
+        total-unrecognized-tlvs: 0
+      tx-statistics:
+        total-frames: 0
+    - dest-mac-address: 01-80-C2-00-00-0E
+      name: '2'
+      remote-systems-data: []
+      rx-statistics:
+        error-frames: 0
+        total-discarded-frames: 0
+        total-discarded-tlvs: 0
+        total-frames: 0
+        total-unrecognized-tlvs: 0
+      tx-statistics:
+        total-frames: 0
+  tx-fast-init: 4
+ieee1588-ptp:ptp:
+  instances:
+    instance: []
+  mchp-velocitysp-ptp:ltcs:
+    ltc: []
+ietf-system:system:
+  authentication:
+    user: []
+ietf-system:system-state:
+  platform:
+    machine: LAN9662 - ung8291
+    os-version: VelocitySP-v2025.06
+mchp-velocitysp-aggr:aggr-system:
+  config: {}
+mchp-velocitysp-system:coap-server:
+  config:
+    security-mode: no-sec
+    ip-dtls-enable: false
+    mup1-dtls-enable: false
+ieee802-dot1cb-stream-identification:stream-identity: []
+ietf-constrained-yang-library:yang-library:
+  checksum: UVG64HZ3sVAfnPUmN/Kjjw==
+  datastore:
+    - identifier: 29208
+      schema: 0
+    - identifier: 29207
+      schema: 0
+    - identifier: 29206
+      schema: 0
+  module-set:
+    - import-only-module:
+        - identifier: 31000
+          revision: ''
+        - identifier: 38400
+          revision: ''
+        - identifier: 38000
+          revision: ''
+        - identifier: 30000
+          revision: ''
+        - identifier: 29200
+          revision: ''
+        - identifier: 29000
+          revision: ''
+        - identifier: 29100
+          revision: ''
+        - identifier: 27000
+          revision: ''
+        - identifier: 26000
+          revision: ''
+        - identifier: 25000
+          revision: ''
+        - identifier: 24899
+          revision: ''
+        - identifier: 23100
+          revision: ''
+        - identifier: 23000
+          revision: ''
+        - identifier: 22000
+          revision: ''
+        - identifier: 16000
+          revision: ''
+        - identifier: 18000
+          revision: ''
+        - identifier: 17000
+          revision: ''
+        - identifier: 14000
+          revision: ''
+        - identifier: 13000
+          revision: ''
+        - identifier: 10000
+          revision: ''
+        - identifier: 8000
+          revision: ''
+        - identifier: 6000
+          revision: ''
+        - identifier: 5000
+          revision: ''
+        - identifier: 4000
+          revision: ''
+        - identifier: 3000
+          revision: ''
+        - identifier: 9000
+          revision: ''
+        - identifier: 1000
+          revision: ''
+        - identifier: 950
+          revision: ''
+      index: 0
+      module:
+        - deviation: []
+          identifier: 39200
+          revision: !!binary ICUGMA==
+        - deviation: []
+          identifier: 31149
+          revision: !!binary ICUDMQ==
+        - deviation:
+            - 31149
+          identifier: 31050
+          revision: !!binary IBgDEw==
+        - deviation: []
+          identifier: 39000
+          revision: !!binary ICUGMA==
+        - deviation: []
+          identifier: 19999
+          revision: !!binary ICQEEg==
+        - deviation: []
+          identifier: 12999
+          revision: !!binary ICQEEg==
+        - deviation: []
+          identifier: 18999
+          revision: !!binary ICQEEg==
+        - deviation: []
+          identifier: 2999
+          revision: !!binary ICQEEg==
+        - deviation: []
+          identifier: 29399
+          revision: !!binary ICQEEg==
+        - deviation: []
+          identifier: 7999
+          revision: !!binary ICQEEg==
+        - deviation: []
+          identifier: 24999
+          revision: !!binary ICUGMA==
+        - deviation: []
+          identifier: 11999
+          revision: !!binary ICQEEg==
+        - deviation: []
+          identifier: 15999
+          revision: !!binary ICQEEg==
+        - deviation:
+            - 29399
+          identifier: 29300
+          revision: !!binary IBkDKA==
+        - deviation:
+            - 24999
+          identifier: 24000
+          revision: !!binary ICESCA==
+        - deviation: []
+          identifier: 21000
+          revision: !!binary ICUGJw==
+        - deviation: []
+          identifier: 20000
+          revision: !!binary ICUGMA==
+        - deviation:
+            - 15999
+          identifier: 15000
+          revision: !!binary ICIIMA==
+        - deviation:
+            - 19999
+          identifier: 19000
+          revision: !!binary IBQIBg==
+        - deviation:
+            - 11999
+          identifier: 11000
+          revision: !!binary ICIDFQ==
+        - deviation:
+            - 7999
+          identifier: 7000
+          revision: !!binary ICMEFw==
+        - deviation:
+            - 2999
+          identifier: 2000
+          revision: !!binary IBgCIA==
+  schema:
+    - index: 0
+      module-set:
+        - 0
+ietf-hardware:hardware:
+  component:
+    - class: chassis
+      firmware-rev: VelocitySP-v2025.06
+      mfg-name: Microchip Technology Inc.
+      model-name: LAN9662 - ung8291
+      name: Board
+      serial-num: A01021E0A080716
+    - class: module
+      hardware-rev: '1'
+      model-name: LAN9662
+      name: Switch
+      parent: Board
+    - class: sensor
+      name: SwTmp
+      parent: Switch
+      sensor-data:
+        oper-status: ok
+        units-display: C
+        value: 56
+        value-precision: 0
+        value-scale: units
+        value-type: celsius
+        value-update-rate: 0
+    - class: port
+      name: Port1
+      parent: Switch
+    - class: port
+      name: Port2
+      parent: Switch
+mchp-velocitysp-acl:acl:
+  acl-policers:
+    policer-list: []
+  acl-rules:
+    rule-list: []
+mchp-velocitysp-redbox:redbox:
+  redbox-capable-list: []
+  redbox-list: []
