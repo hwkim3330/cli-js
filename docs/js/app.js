@@ -45,11 +45,15 @@ const App = {
       }
     });
 
-    // QoS apply buttons (placeholder - will show message)
-    document.getElementById('pcp-apply-btn')?.addEventListener('click', () => this.showMessage('PCP mapping saved (not sent - iPATCH not implemented yet)'));
-    document.getElementById('queue-apply-btn')?.addEventListener('click', () => this.showMessage('Queue config saved (not sent - iPATCH not implemented yet)'));
-    document.getElementById('shaper-apply-btn')?.addEventListener('click', () => this.showMessage('Shaper config saved (not sent - iPATCH not implemented yet)'));
-    document.getElementById('tas-apply-btn')?.addEventListener('click', () => this.showMessage('TAS config saved (not sent - iPATCH not implemented yet)'));
+    // Apply buttons
+    document.getElementById('pcp-apply-btn')?.addEventListener('click', () => this.applyPCPMapping());
+    document.getElementById('queue-apply-btn')?.addEventListener('click', () => this.showMessage('Queue config - not yet implemented'));
+    document.getElementById('shaper-apply-btn')?.addEventListener('click', () => this.showMessage('Shaper config - not yet implemented'));
+    document.getElementById('tas-apply-btn')?.addEventListener('click', () => this.applyTASConfig());
+    document.getElementById('port-apply-btn')?.addEventListener('click', () => this.applyPortConfig());
+    document.getElementById('port-cancel-btn')?.addEventListener('click', () => {
+      document.getElementById('port-detail-card').style.display = 'none';
+    });
 
     this.updateStatus('Ready');
   },
@@ -391,6 +395,78 @@ const App = {
 
   showMessage(message) {
     alert(message);
+  },
+
+  // ========== iPATCH Methods ==========
+
+  async applyPortConfig() {
+    if (!this.serial.boardReady) {
+      this.showError('Not connected');
+      return;
+    }
+
+    const portNum = document.getElementById('port-detail-num').textContent;
+    const adminStatus = document.getElementById('port-admin-status').value;
+    const enabled = adminStatus === 'up';
+
+    const iface = this.interfaces[parseInt(portNum) - 1];
+    if (!iface) {
+      this.showError('Interface not found');
+      return;
+    }
+
+    const interfaceName = iface.name || `eth${portNum}`;
+
+    try {
+      this.updateStatus('Applying...');
+      const patch = SIDTransformer.buildInterfacePatch(interfaceName, enabled);
+      console.log('Port patch:', JSON.stringify(patch));
+
+      await this.serial.sendIPatchRequest(patch);
+      this.showMessage(`Port ${portNum} ${enabled ? 'enabled' : 'disabled'}`);
+      document.getElementById('port-detail-card').style.display = 'none';
+      await this.refreshData();
+    } catch (error) {
+      console.error('Port config failed:', error);
+      this.showError('Failed: ' + error.message);
+      this.updateStatus('Error');
+    }
+  },
+
+  async applyTASConfig() {
+    if (!this.serial.boardReady) {
+      this.showError('Not connected');
+      return;
+    }
+
+    const portNum = document.getElementById('tas-port').value;
+    const enabled = document.getElementById('tas-enabled').checked;
+    const iface = this.interfaces[parseInt(portNum) - 1];
+
+    if (!iface) {
+      this.showError('Interface not found');
+      return;
+    }
+
+    const interfaceName = iface.name || `eth${portNum}`;
+
+    try {
+      this.updateStatus('Applying TAS...');
+      const patch = SIDTransformer.buildTASPatch(interfaceName, enabled);
+      console.log('TAS patch:', JSON.stringify(patch));
+
+      await this.serial.sendIPatchRequest(patch);
+      this.showMessage(`TAS ${enabled ? 'enabled' : 'disabled'} on Port ${portNum}`);
+      await this.refreshData();
+    } catch (error) {
+      console.error('TAS config failed:', error);
+      this.showError('Failed: ' + error.message);
+      this.updateStatus('Error');
+    }
+  },
+
+  async applyPCPMapping() {
+    this.showMessage('PCP mapping - requires QoS YANG model');
   }
 };
 

@@ -256,6 +256,36 @@ class SerialManager extends EventTarget {
 
     return result;
   }
+
+  /**
+   * Send iPATCH request to modify configuration
+   * @param {Object} patchData - Delta-SID encoded patch data
+   * @returns {Promise<Object>} CoAP response
+   */
+  async sendIPatchRequest(patchData) {
+    if (!this.boardReady) {
+      throw new Error('Board not ready');
+    }
+
+    // Encode patch data to CBOR
+    const cborPayload = CBOREncoder.encode(patchData);
+    console.log('[iPATCH] Payload size:', cborPayload.length, 'bytes');
+
+    // Build iPATCH request
+    const { frame, messageId } = CoAP.buildIPatchRequest(cborPayload);
+
+    // Send and wait for response
+    const response = await this.sendRequest(frame, messageId);
+
+    if (!response.isSuccess()) {
+      const codeClass = response.getCodeClass();
+      const codeDetail = response.getCodeDetail();
+      throw new Error(`iPATCH failed: ${codeClass}.${String(codeDetail).padStart(2, '0')}`);
+    }
+
+    console.log('[iPATCH] Success');
+    return response;
+  }
 }
 
 window.SerialManager = SerialManager;

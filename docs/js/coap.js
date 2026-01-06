@@ -187,6 +187,36 @@ const CoAP = {
   },
 
   /**
+   * Build iPATCH request
+   */
+  buildIPatchRequest(payload, options = {}) {
+    const messageId = options.messageId || Math.floor(Math.random() * 65536);
+    const token = options.token || new Uint8Array([
+      Math.floor(Math.random() * 256),
+      Math.floor(Math.random() * 256)
+    ]);
+
+    const coapOptions = [
+      { number: this.OptionNumber.URI_PATH, value: 'c' },
+      { number: this.OptionNumber.CONTENT_FORMAT, value: this.ContentFormat.YANG_DATA_CBOR_SID },
+      { number: this.OptionNumber.ACCEPT, value: this.ContentFormat.YANG_DATA_CBOR_SID }
+    ];
+
+    return {
+      frame: this.buildMessage({
+        type: this.MessageType.CON,
+        code: this.MethodCode.IPATCH,
+        messageId,
+        token,
+        options: coapOptions,
+        payload
+      }),
+      messageId,
+      token
+    };
+  },
+
+  /**
    * Build PING frame
    */
   buildPingFrame() {
