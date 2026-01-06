@@ -140,9 +140,6 @@ const SIDTransformer = {
    * Build TAS (802.1Qbv) gate-enabled patch
    */
   buildTASPatch(interfaceName, gateEnabled) {
-    // ieee802-dot1q-sched:gate-parameters SID relative to interface
-    // This is a complex nested structure
-
     return {
       2005: {  // ietf-interfaces:interfaces
         23: [  // interface
@@ -152,6 +149,134 @@ const SIDTransformer = {
               22: {  // gate-parameters
                 1: gateEnabled  // gate-enabled
               }
+            }
+          }
+        ]
+      }
+    };
+  },
+
+  /**
+   * Build Priority to Traffic Class (Queue) mapping patch
+   * Maps 802.1p priority values (0-7) to traffic classes (queues)
+   *
+   * SID Structure:
+   * - interface: 2028 (delta 23 from 2005)
+   * - bridge-port: 7163 (delta 5135 from 2028)
+   * - traffic-class: 7240 (delta 77 from 7163)
+   * - traffic-class-table: 7243 (delta 3 from 7240)
+   * - priority0-7: 7245-7252 (delta 2-9 from 7243)
+   *
+   * @param {string} interfaceName - Interface name (e.g., "eth0")
+   * @param {number[]} priorityToQueue - Array of 8 queue numbers for priority 0-7
+   */
+  buildTrafficClassPatch(interfaceName, priorityToQueue) {
+    // Build traffic-class-table with priority0-7 mappings
+    const trafficClassTable = {
+      1: 8  // number-of-traffic-classes = 8
+    };
+
+    // Add priority0-7 (delta 2-9 from traffic-class-table)
+    for (let i = 0; i < 8; i++) {
+      trafficClassTable[i + 2] = priorityToQueue[i];
+    }
+
+    return {
+      2005: {  // ietf-interfaces:interfaces
+        23: [  // interface
+          {
+            5: interfaceName,  // name
+            5135: {  // bridge-port (7163 - 2028)
+              77: {  // traffic-class (7240 - 7163)
+                3: trafficClassTable  // traffic-class-table (7243 - 7240)
+              }
+            }
+          }
+        ]
+      }
+    };
+  },
+
+  /**
+   * Build Priority Regeneration patch
+   * Remaps incoming priority to different priority values
+   *
+   * @param {string} interfaceName - Interface name
+   * @param {number[]} regenerationMap - Array of 8 regenerated priority values
+   */
+  buildPriorityRegenerationPatch(interfaceName, regenerationMap) {
+    // priority-regeneration: 7200 (delta 37 from 7163)
+    // priority0-7: delta 1-8 from 7200
+    const priorityRegen = {};
+    for (let i = 0; i < 8; i++) {
+      priorityRegen[i + 1] = regenerationMap[i];
+    }
+
+    return {
+      2005: {  // ietf-interfaces:interfaces
+        23: [  // interface
+          {
+            5: interfaceName,  // name
+            5135: {  // bridge-port
+              37: priorityRegen  // priority-regeneration
+            }
+          }
+        ]
+      }
+    };
+  },
+
+  /**
+   * Build QoS Shaper patch (Microchip specific)
+   *
+   * @param {string} interfaceName - Interface name
+   * @param {number} trafficClass - Traffic class (0-7)
+   * @param {number} cir - Committed Information Rate (kbps)
+   * @param {number} cbs - Committed Burst Size (bytes)
+   */
+  buildQosShaperPatch(interfaceName, trafficClass, cir, cbs) {
+    // eth-qos: 8048 (delta 6020 from 2028)
+    // config: 8049 (delta 1 from 8048)
+    // traffic-class-shapers: 8051 (delta 2 from 8049)
+
+    return {
+      2005: {
+        23: [
+          {
+            5: interfaceName,
+            6020: {  // eth-qos
+              1: {  // config
+                2: [{  // traffic-class-shapers
+                  1: trafficClass,  // traffic-class
+                  4: {  // single-leaky-bucket
+                    1: cbs,  // committed-burst-size
+                    2: cir   // committed-information-rate
+                  }
+                }]
+              }
+            }
+          }
+        ]
+      }
+    };
+  },
+
+  /**
+   * Build Default Priority patch
+   * Sets the default priority for untagged frames
+   *
+   * @param {string} interfaceName - Interface name
+   * @param {number} priority - Default priority (0-7)
+   */
+  buildDefaultPriorityPatch(interfaceName, priority) {
+    // default-priority: 7164 (delta 1 from 7163)
+    return {
+      2005: {
+        23: [
+          {
+            5: interfaceName,
+            5135: {  // bridge-port
+              1: priority  // default-priority
             }
           }
         ]

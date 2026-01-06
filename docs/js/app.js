@@ -47,8 +47,8 @@ const App = {
 
     // Apply buttons
     document.getElementById('pcp-apply-btn')?.addEventListener('click', () => this.applyPCPMapping());
-    document.getElementById('queue-apply-btn')?.addEventListener('click', () => this.showMessage('Queue config - not yet implemented'));
-    document.getElementById('shaper-apply-btn')?.addEventListener('click', () => this.showMessage('Shaper config - not yet implemented'));
+    document.getElementById('queue-apply-btn')?.addEventListener('click', () => this.applyQueueConfig());
+    document.getElementById('shaper-apply-btn')?.addEventListener('click', () => this.applyShaperConfig());
     document.getElementById('tas-apply-btn')?.addEventListener('click', () => this.applyTASConfig());
     document.getElementById('port-apply-btn')?.addEventListener('click', () => this.applyPortConfig());
     document.getElementById('port-cancel-btn')?.addEventListener('click', () => {
@@ -466,7 +466,89 @@ const App = {
   },
 
   async applyPCPMapping() {
-    this.showMessage('PCP mapping - requires QoS YANG model');
+    if (!this.serial.boardReady) {
+      this.showError('Not connected');
+      return;
+    }
+
+    // Get PCP to Queue mapping from UI
+    const priorityToQueue = [];
+    for (let pcp = 0; pcp < 8; pcp++) {
+      const select = document.querySelector(`.pcp-queue[data-pcp="${pcp}"]`);
+      priorityToQueue.push(select ? parseInt(select.value, 10) : pcp);
+    }
+
+    try {
+      this.updateStatus('Applying PCP mapping...');
+
+      // Apply to both ports
+      for (let portNum = 1; portNum <= 2; portNum++) {
+        const iface = this.interfaces[portNum - 1];
+        if (!iface) continue;
+
+        const interfaceName = iface.name || `eth${portNum}`;
+        const patch = SIDTransformer.buildTrafficClassPatch(interfaceName, priorityToQueue);
+        console.log(`Port ${portNum} PCP patch:`, JSON.stringify(patch));
+
+        await this.serial.sendIPatchRequest(patch);
+      }
+
+      this.showMessage('PCP mapping applied to all ports');
+      await this.refreshData();
+    } catch (error) {
+      console.error('PCP mapping failed:', error);
+      this.showError('Failed: ' + error.message);
+      this.updateStatus('Error');
+    }
+  },
+
+  async applyQueueConfig() {
+    if (!this.serial.boardReady) {
+      this.showError('Not connected');
+      return;
+    }
+
+    // Queue configuration is typically tied to scheduler weights
+    // For now, show message that it requires more complex setup
+    this.showMessage('Queue scheduling weights - device specific implementation needed');
+  },
+
+  async applyShaperConfig() {
+    if (!this.serial.boardReady) {
+      this.showError('Not connected');
+      return;
+    }
+
+    try {
+      this.updateStatus('Applying shaper config...');
+
+      // Get shaper values from UI
+      for (let portNum = 1; portNum <= 2; portNum++) {
+        const iface = this.interfaces[portNum - 1];
+        if (!iface) continue;
+
+        const interfaceName = iface.name || `eth${portNum}`;
+        const egressRate = parseInt(document.getElementById(`port${portNum}-egress`)?.value || '1000', 10);
+        const burstSize = parseInt(document.getElementById(`port${portNum}-burst`)?.value || '64', 10);
+
+        // Convert Mbps to kbps, KB to bytes
+        const cirKbps = egressRate * 1000;
+        const cbsBytes = burstSize * 1024;
+
+        // Apply shaper to all traffic classes (or just TC 7 for simplicity)
+        const patch = SIDTransformer.buildQosShaperPatch(interfaceName, 7, cirKbps, cbsBytes);
+        console.log(`Port ${portNum} shaper patch:`, JSON.stringify(patch));
+
+        await this.serial.sendIPatchRequest(patch);
+      }
+
+      this.showMessage('Shaper config applied');
+      await this.refreshData();
+    } catch (error) {
+      console.error('Shaper config failed:', error);
+      this.showError('Failed: ' + error.message);
+      this.updateStatus('Error');
+    }
   }
 };
 
