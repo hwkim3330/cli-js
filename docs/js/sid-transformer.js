@@ -117,19 +117,20 @@ const SIDTransformer = {
 
   /**
    * Build interface enable/disable patch
+   *
+   * Correct SID values:
+   * - /ietf-interfaces:interfaces = 2005
+   * - /ietf-interfaces:interfaces/interface = 2033 (delta 28 from 2005)
+   * - /ietf-interfaces:interfaces/interface/name = 2042 (delta 9 from 2033)
+   * - /ietf-interfaces:interfaces/interface/enabled = 2036 (delta 3 from 2033)
    */
   buildInterfacePatch(interfaceName, enabled) {
-    // ietf-interfaces:interfaces SID = 2005
-    // interface list SID = 2005 + 23 = 2028
-    // name SID = 2028 + 5 = 2033
-    // enabled SID = 2028 + 4 = 2032
-
     return {
       2005: {  // ietf-interfaces:interfaces
-        23: [  // interface
+        28: [  // interface (2033 - 2005 = 28)
           {
-            5: interfaceName,  // name
-            4: enabled         // enabled
+            9: interfaceName,  // name (2042 - 2033 = 9)
+            3: enabled         // enabled (2036 - 2033 = 3)
           }
         ]
       }
@@ -138,16 +139,22 @@ const SIDTransformer = {
 
   /**
    * Build TAS (802.1Qbv) gate-enabled patch
+   *
+   * SID Path:
+   * - interface = 2033 (delta 28 from 2005)
+   * - bridge-port = 7163 (delta 5130 from 2033)
+   * - gate-parameter-table = 23101 (delta 15938 from 7163)
+   * - gate-enabled = 23125 (delta 24 from 23101)
    */
   buildTASPatch(interfaceName, gateEnabled) {
     return {
       2005: {  // ietf-interfaces:interfaces
-        23: [  // interface
+        28: [  // interface
           {
-            5: interfaceName,  // name
-            2970: {  // ieee802-dot1q-sched augment
-              22: {  // gate-parameters
-                1: gateEnabled  // gate-enabled
+            9: interfaceName,  // name
+            5130: {  // bridge-port
+              15938: {  // gate-parameter-table
+                24: gateEnabled  // gate-enabled
               }
             }
           }
@@ -158,37 +165,33 @@ const SIDTransformer = {
 
   /**
    * Build Priority to Traffic Class (Queue) mapping patch
-   * Maps 802.1p priority values (0-7) to traffic classes (queues)
    *
    * SID Structure:
-   * - interface: 2028 (delta 23 from 2005)
-   * - bridge-port: 7163 (delta 5135 from 2028)
-   * - traffic-class: 7240 (delta 77 from 7163)
-   * - traffic-class-table: 7243 (delta 3 from 7240)
-   * - priority0-7: 7245-7252 (delta 2-9 from 7243)
-   *
-   * @param {string} interfaceName - Interface name (e.g., "eth0")
-   * @param {number[]} priorityToQueue - Array of 8 queue numbers for priority 0-7
+   * - interface = 2033 (delta 28 from 2005)
+   * - bridge-port = 7163 (delta 5130 from 2033)
+   * - traffic-class = 7237 (delta 74 from 7163)
+   * - traffic-class-table = 7243 (delta 6 from 7237)
+   * - number-of-traffic-classes = 7244 (delta 1 from 7243)
+   * - priority0-7 = 7245-7252 (delta 2-9 from 7243)
    */
   buildTrafficClassPatch(interfaceName, priorityToQueue) {
-    // Build traffic-class-table with priority0-7 mappings
     const trafficClassTable = {
-      1: 8  // number-of-traffic-classes = 8
+      1: 8  // number-of-traffic-classes (delta 1)
     };
 
-    // Add priority0-7 (delta 2-9 from traffic-class-table)
+    // priority0-7 (delta 2-9 from traffic-class-table)
     for (let i = 0; i < 8; i++) {
       trafficClassTable[i + 2] = priorityToQueue[i];
     }
 
     return {
-      2005: {  // ietf-interfaces:interfaces
-        23: [  // interface
+      2005: {
+        28: [  // interface
           {
-            5: interfaceName,  // name
-            5135: {  // bridge-port (7163 - 2028)
-              77: {  // traffic-class (7240 - 7163)
-                3: trafficClassTable  // traffic-class-table (7243 - 7240)
+            9: interfaceName,  // name
+            5130: {  // bridge-port
+              74: {  // traffic-class
+                6: trafficClassTable  // traffic-class-table
               }
             }
           }
@@ -199,25 +202,23 @@ const SIDTransformer = {
 
   /**
    * Build Priority Regeneration patch
-   * Remaps incoming priority to different priority values
    *
-   * @param {string} interfaceName - Interface name
-   * @param {number[]} regenerationMap - Array of 8 regenerated priority values
+   * SID:
+   * - priority-regeneration = 7200 (delta 37 from 7163)
+   * - priority0-7 = 7201-7208 (delta 1-8 from 7200)
    */
   buildPriorityRegenerationPatch(interfaceName, regenerationMap) {
-    // priority-regeneration: 7200 (delta 37 from 7163)
-    // priority0-7: delta 1-8 from 7200
     const priorityRegen = {};
     for (let i = 0; i < 8; i++) {
       priorityRegen[i + 1] = regenerationMap[i];
     }
 
     return {
-      2005: {  // ietf-interfaces:interfaces
-        23: [  // interface
+      2005: {
+        28: [  // interface
           {
-            5: interfaceName,  // name
-            5135: {  // bridge-port
+            9: interfaceName,  // name
+            5130: {  // bridge-port
               37: priorityRegen  // priority-regeneration
             }
           }
@@ -229,28 +230,24 @@ const SIDTransformer = {
   /**
    * Build QoS Shaper patch (Microchip specific)
    *
-   * @param {string} interfaceName - Interface name
-   * @param {number} trafficClass - Traffic class (0-7)
-   * @param {number} cir - Committed Information Rate (kbps)
-   * @param {number} cbs - Committed Burst Size (bytes)
+   * SID:
+   * - eth-qos = 8048 (delta 6015 from 2033)
+   * - config = 8049 (delta 1)
+   * - traffic-class-shapers = 8051 (delta 2 from config)
    */
   buildQosShaperPatch(interfaceName, trafficClass, cir, cbs) {
-    // eth-qos: 8048 (delta 6020 from 2028)
-    // config: 8049 (delta 1 from 8048)
-    // traffic-class-shapers: 8051 (delta 2 from 8049)
-
     return {
       2005: {
-        23: [
+        28: [  // interface
           {
-            5: interfaceName,
-            6020: {  // eth-qos
+            9: interfaceName,  // name
+            6015: {  // eth-qos (8048 - 2033)
               1: {  // config
                 2: [{  // traffic-class-shapers
-                  1: trafficClass,  // traffic-class
+                  1: trafficClass,
                   4: {  // single-leaky-bucket
-                    1: cbs,  // committed-burst-size
-                    2: cir   // committed-information-rate
+                    1: cbs,
+                    2: cir
                   }
                 }]
               }
@@ -263,20 +260,17 @@ const SIDTransformer = {
 
   /**
    * Build Default Priority patch
-   * Sets the default priority for untagged frames
    *
-   * @param {string} interfaceName - Interface name
-   * @param {number} priority - Default priority (0-7)
+   * SID: default-priority = 7170 (delta 7 from 7163)
    */
   buildDefaultPriorityPatch(interfaceName, priority) {
-    // default-priority: 7164 (delta 1 from 7163)
     return {
       2005: {
-        23: [
+        28: [  // interface
           {
-            5: interfaceName,
-            5135: {  // bridge-port
-              1: priority  // default-priority
+            9: interfaceName,  // name
+            5130: {  // bridge-port
+              7: priority  // default-priority (7170 - 7163)
             }
           }
         ]
